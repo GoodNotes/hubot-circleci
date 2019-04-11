@@ -9,6 +9,7 @@
 #   hubot circle last <user>/<repo> [branch] - Returns the build status of the last complete build of https://circleci.com/<user>/<repo>
 #   hubot circle retry <user>/<repo> <build_num> - Retries the build
 #   hubot circle retry all <failed>/<success> - Retries all builds matching the provided status
+#   hubot circle build <user>/<repo> <branch> - Trigger a build with a branch
 #   hubot circle cancel <user>/<repo> <build_num> - Cancels the build
 #   hubot circle clear <user>/<repo> - Clears the cache for the specified repo
 #   hubot circle clear all - Clears the cache for the github organization set using HUBOT_GITHUB_ORG
@@ -195,6 +196,19 @@ module.exports = (robot) ->
       msg.send "Status can only be failed or success."
       return
     getProjectsByStatus(msg, endpoint, status, 'list')
+
+  robot.respond /circle build (.*) (.*)/i, (msg) ->
+    unless checkToken(msg)
+      return
+    project = escape(toProject(msg.match[1]))
+    unless msg.match[2]?
+      msg.send "I can't build without a branch"
+      return
+    branch = escape(msg.match[2])
+    msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
+      .headers("Accept": "application/json")
+      .post('{}') handleResponse msg, (response) ->
+          msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
   robot.respond /circle cancel (.*) (.*)/i, (msg) ->
     unless checkToken(msg)
