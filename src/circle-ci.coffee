@@ -126,7 +126,7 @@ handleResponse = (msg, handler) ->
         msg.send 'Not authorized.  Did you set HUBOT_CIRCLECI_TOKEN correctly?'
       when 500
         msg.send 'Yikes!  I turned that circle into a square (CircleCI responded 500)' # Don't send body since we'll get HTML back from Circle
-      when 200
+      when 200, 201
         response = JSON.parse(body)
         handler response
       else
