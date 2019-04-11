@@ -205,9 +205,12 @@ module.exports = (robot) ->
       msg.send "I can't build without a branch"
       return
     branch = escape(msg.match[2])
+    data = JSON.stringify({
+      "build_parameters": {"CIRCLE_JOB": "build-and-deploy"}
+    })
     msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
       .headers("Accept": "application/json")
-      .post({"build_parameters": {"CIRCLE_JOB": "build-and-deploy"}}) handleResponse msg, (response) ->
+      .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
   robot.respond /circle cancel (.*) (.*)/i, (msg) ->
