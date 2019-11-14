@@ -10,7 +10,7 @@
 #   hubot circle retry <user>/<repo> <build_num> - Retries the build
 #   hubot circle retry all <failed>/<success> - Retries all builds matching the provided status
 #   hubot circle deploy <user>/<repo> <branch> - Trigger deploy on a branch
-#   hubot circle deploy-mac <user>/<repo> <branch> - Trigger deploy mac on a branch
+#   hubot circle deploy-catalyst <user>/<repo> <branch> - Trigger deploy mac on a branch
 #   hubot circle adhoc <user>/<repo> <branch> - Trigger adhoc build on a branch
 #   hubot circle cancel <user>/<repo> <build_num> - Cancels the build
 #   hubot circle clear <user>/<repo> - Clears the cache for the specified repo
@@ -242,7 +242,7 @@ module.exports = (robot) ->
       return
     branch = escape(msg.match[2])
     data = JSON.stringify({
-      build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'catalyst' }
+      build_parameters:{ CIRCLE_JOB: 'deploy-beta-catalyst', FASTLANE_LANE: 'beta' }
     })
     msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
       .headers("Accept": "application/json")
