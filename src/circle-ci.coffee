@@ -233,7 +233,7 @@ module.exports = (robot) ->
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
-  robot.respond /circle deploy-mac (.*) (.*)/i, (msg) ->
+  robot.respond /circle deploy-catalyst (.*) (.*)/i, (msg) ->
     unless checkToken(msg)
       return
     project = escape(toProject(msg.match[1]))
