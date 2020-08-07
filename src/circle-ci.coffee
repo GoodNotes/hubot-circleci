@@ -262,7 +262,7 @@ module.exports = (robot) ->
       return
     branch = escape(msg.match[2])
     data = JSON.stringify({
-      build_parameters:{ CIRCLE_JOB: 'beta-catalyst', FASTLANE_LANE: 'appcenter' }
+      build_parameters:{ CIRCLE_JOB: 'deploy-catalyst', FASTLANE_LANE: 'appcenter' }
     })
     msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}&")
       .headers("Accept": "application/json")
