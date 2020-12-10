@@ -1,7 +1,7 @@
 {
   "name": "hubot-circleci",
   "description": "Hubot CircleCI integration",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "author": "Dylan Lingelbach (https://github.com/dylanlingelbach)",
   "license": "MIT",
   "keywords": [
@@ -21,10 +21,10 @@
     "coffee-script": "~1.6"
   },
   "devDependencies": {
-    "mocha": "*",
     "chai": "*",
-    "sinon-chai": "*",
-    "sinon": "*"
+    "mocha": "*",
+    "sinon": "*",
+    "sinon-chai": "*"
   },
   "main": "index.coffee",
   "scripts": {

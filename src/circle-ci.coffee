@@ -21,7 +21,7 @@
 #   hubot circle clear <user>/<repo> - Clears the cache for the specified repo
 #   hubot circle clear all - Clears the cache for the github organization set using HUBOT_GITHUB_ORG
 #   hubot circle list <failed>/<success> - Lists all failed/success builds for a given project.
-#   hubot circle pilot <group> <email> <first_name> <last_name> - Add a Testflight tester
+#   hubot circle pilot <email> <first_name> <last_name> <group> - Add a Testflight tester
 #
 # Configuration:
 #   HUBOT_CIRCLECI_TOKEN
@@ -262,15 +262,12 @@ module.exports = (robot) ->
     project = "fastlane"
     branch = "master"
     unless msg.match[1]?
-      msg.send "You must provide a group"
-      return
-    unless msg.match[2]?
       msg.send "You must provide an email"
       return
-    group = escape(msg.match[1])
-    email = escape(msg.match[2])
-    first = escape(msg.match[3] ?? "")
-    last = escape(msg.match[4] ?? "")
+    email = escape(msg.match[1])
+    first = escape(msg.match[2] ?? "")
+    last = escape(msg.match[3] ?? "")
+    group = escape(msg.match[4] ?? "External Testers")
     data = JSON.stringify({
       build_parameters:{ CIRCLE_JOB: 'add-tester', PILOT_GROUPS: group, PILOT_TESTER_EMAIL: email, PILOT_TESTER_FIRST_NAME: first, PILOT_TESTER_LAST_NAME: last }
     })
