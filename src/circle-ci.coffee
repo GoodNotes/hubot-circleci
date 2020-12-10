@@ -256,7 +256,7 @@ module.exports = (robot) ->
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
-  robot.respond /circle pilot (.*) (.*) (.*) (.*)/i, (msg) ->
+  robot.respond /circle pilot ([^ ]*) ?([^ ]*) ?([^ ]*) ?(.*)/i, (msg) ->
     unless checkToken(msg)
       return
     project = "fastlane"
