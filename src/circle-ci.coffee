@@ -21,6 +21,7 @@
 #   hubot circle clear <user>/<repo> - Clears the cache for the specified repo
 #   hubot circle clear all - Clears the cache for the github organization set using HUBOT_GITHUB_ORG
 #   hubot circle list <failed>/<success> - Lists all failed/success builds for a given project.
+#   hubot circle pilot <group> <email> <first_name> <last_name> - Add a Testflight tester
 #
 # Configuration:
 #   HUBOT_CIRCLECI_TOKEN
@@ -254,6 +255,30 @@ module.exports = (robot) ->
       .headers("Content-Type": "application/json")
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
+
+  robot.respond /circle pilot (.*) (.*) (.*) (.*)/i, (msg) ->
+    unless checkToken(msg)
+      return
+    project = "fastlane"
+    branch = "master"
+    unless msg.match[1]?
+      msg.send "You must provide a group"
+      return
+    unless msg.match[2]?
+      msg.send "You must provide an email"
+      return
+    group = escape(msg.match[1])
+    email = escape(msg.match[2])
+    first = escape(msg.match[3] ?? "")
+    last = escape(msg.match[4] ?? "")
+    data = JSON.stringify({
+      build_parameters:{ CIRCLE_JOB: 'add-tester', PILOT_GROUPS: group, PILOT_TESTER_EMAIL: email, PILOT_TESTER_FIRST_NAME: first, PILOT_TESTER_LAST_NAME: last }
+    })
+    msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
+      .headers("Accept": "application/json")
+      .headers("Content-Type": "application/json")
+      .post(data) handleResponse msg, (response) ->
+          msg.send "Triggered add tester: #{email} (#{response.build_url})"
 
   robot.respond /circle adhoc (.*) (.*)/i, (msg) ->
     unless checkToken(msg)
