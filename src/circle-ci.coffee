@@ -265,9 +265,9 @@ module.exports = (robot) ->
       msg.send "You must provide an email"
       return
     email = escape(msg.match[1])
-    first = escape(msg.match[2] ?? "")
-    last = escape(msg.match[3] ?? "")
-    group = escape(msg.match[4] ?? "External Testers")
+    first = escape(msg.match[2] ? "")
+    last = escape(msg.match[3] ? "")
+    group = escape(msg.match[4] ? "External Testers")
     data = JSON.stringify({
       build_parameters:{ CIRCLE_JOB: 'add-tester', PILOT_GROUPS: group, PILOT_TESTER_EMAIL: email, PILOT_TESTER_FIRST_NAME: first, PILOT_TESTER_LAST_NAME: last }
     })
