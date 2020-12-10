@@ -265,9 +265,9 @@ module.exports = (robot) ->
       msg.send "You must provide an email"
       return
     email = escape(msg.match[1])
-    first = escape(msg.match[2] ? "")
-    last = escape(msg.match[3] ? "")
-    group = escape(msg.match[4] ? "External Testers")
+    first = escape(msg.match[2])
+    last = escape(msg.match[3])
+    group = escape(if msg.match[4].empty? then "External Testers" else msg.match[4])
     data = JSON.stringify({
       build_parameters:{ CIRCLE_JOB: 'add-tester', PILOT_GROUPS: group, PILOT_TESTER_EMAIL: email, PILOT_TESTER_FIRST_NAME: first, PILOT_TESTER_LAST_NAME: last }
     })
@@ -275,7 +275,7 @@ module.exports = (robot) ->
       .headers("Accept": "application/json")
       .headers("Content-Type": "application/json")
       .post(data) handleResponse msg, (response) ->
-          msg.send "Triggered add tester: #{email} (#{response.build_url})"
+          msg.send "Triggered add tester: #{response.build_url}"
 
   robot.respond /circle adhoc (.*) (.*)/i, (msg) ->
     unless checkToken(msg)
