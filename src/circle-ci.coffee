@@ -242,7 +242,7 @@ module.exports = (robot) ->
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
-  robot.respond /circle community (.*) (.*) ?(.*)?/i, (msg) ->
+  robot.respond /circle community (.*) (.*)\s*(.*)/i, (msg) ->
     unless checkToken(msg)
       return
     project = escape(toProject(msg.match[1]))
