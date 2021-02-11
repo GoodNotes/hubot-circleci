@@ -12,7 +12,7 @@
 #   hubot circle deploy <user>/<repo> <branch> - Trigger deploy on a branch
 #   hubot circle deploy-catalyst <user>/<repo> <branch> - Trigger `fastlane catalyst deploy` on a branch
 #   hubot circle deploy-catalyst-legacy <user>/<repo> <branch> - Trigger `fastlane catalyst legacy` on a branch
-#   hubot circle community <user>/<repo> <branch> - Trigger deploy community build on a branch
+#   hubot circle community <user>/<repo> <branch> [environment] - Trigger deploy community build on a branch
 #   hubot circle beta <user>/<repo> <branch> - Trigger deploy beta on a branch
 #   hubot circle beta-catalyst <user>/<repo> <branch> - Trigger `fastlane catalyst appcenter` on a branch
 #   hubot circle adhoc <user>/<repo> <branch> - Trigger adhoc build on a branch
@@ -239,7 +239,7 @@ module.exports = (robot) ->
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
-  robot.respond /circle community (.*) (.*)/i, (msg) ->
+  robot.respond /circle community (.*) (.*) ?(.*)?/i, (msg) ->
     unless checkToken(msg)
       return
     project = escape(toProject(msg.match[1]))
@@ -247,8 +247,11 @@ module.exports = (robot) ->
       msg.send "I can't build without a branch"
       return
     branch = escape(msg.match[2])
+    environment = escape(msg.match[3] ? "production").toUpperCase()
+    swift_flags = "COMMUNITY_ENV_#{environment}=1"
+
     data = JSON.stringify({
-      build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'community_beta', IOS_MARKETING_VERSION: '5.8.0' }
+      build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'community_beta', IOS_MARKETING_VERSION: '5.8.0', IOS_SWIFT_FLAGS: swift_flags }
     })
     msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
       .headers("Accept": "application/json")
