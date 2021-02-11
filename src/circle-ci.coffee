@@ -208,7 +208,7 @@ module.exports = (robot) ->
       return
     getProjectsByStatus(msg, endpoint, status, 'list')
 
-  robot.respond /circle deploy (.*) (.*)/i, (msg) ->
+  robot.respond /circle deploy (\S*)\s*(\S*)/i, (msg) ->
     unless checkToken(msg)
       return
     project = escape(toProject(msg.match[1]))
@@ -225,7 +225,7 @@ module.exports = (robot) ->
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
-  robot.respond /circle beta (.*) (.*)/i, (msg) ->
+  robot.respond /circle beta (\S*)\s*(\S*)/i, (msg) ->
     unless checkToken(msg)
       return
     project = escape(toProject(msg.match[1]))
@@ -242,7 +242,7 @@ module.exports = (robot) ->
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
-  robot.respond /circle community (.*) (.*)\s*(.*)/i, (msg) ->
+  robot.respond /circle community (\S*)\s*(\S*)\s*(\S*)/i, (msg) ->
     unless checkToken(msg)
       return
     project = escape(toProject(msg.match[1]))
