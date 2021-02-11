@@ -140,7 +140,7 @@ handleResponse = (msg, handler) ->
           handler response
         else
           msg.send "Hmm.  I don't know how to process that CircleCI response: #{res.statusCode}", body
-    catch ( e )
+    catch e
       msg.send "Something when wrong while parsing response", e
 
 module.exports = (robot) ->
