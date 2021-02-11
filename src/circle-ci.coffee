@@ -126,19 +126,22 @@ handleResponse = (msg, handler) ->
     if err?
       msg.send "Something went really wrong: #{err}"
 
-    switch res.statusCode
-      when 404
-        response = JSON.parse(body)
-        msg.send "I couldn't find what you were looking for: #{response.message}"
-      when 401
-        msg.send 'Not authorized.  Did you set HUBOT_CIRCLECI_TOKEN correctly?'
-      when 500
-        msg.send 'Yikes!  I turned that circle into a square (CircleCI responded 500)' # Don't send body since we'll get HTML back from Circle
-      when 200, 201
-        response = JSON.parse(body)
-        handler response
-      else
-        msg.send "Hmm.  I don't know how to process that CircleCI response: #{res.statusCode}", body
+    try
+      switch res.statusCode
+        when 404
+          response = JSON.parse(body)
+          msg.send "I couldn't find what you were looking for: #{response.message}"
+        when 401
+          msg.send 'Not authorized.  Did you set HUBOT_CIRCLECI_TOKEN correctly?'
+        when 500
+          msg.send 'Yikes!  I turned that circle into a square (CircleCI responded 500)' # Don't send body since we'll get HTML back from Circle
+        when 200, 201
+          response = JSON.parse(body)
+          handler response
+        else
+          msg.send "Hmm.  I don't know how to process that CircleCI response: #{res.statusCode}", body
+    catch ( e )
+      msg.send "Something when wrong while parsing response", e
 
 module.exports = (robot) ->
 
