@@ -251,7 +251,8 @@ module.exports = (robot) ->
       return
     branch = escape(msg.match[2])
     environment = escape(msg.match[3] ? "production").toUpperCase()
-    swift_flags = "COMMUNITY_ENV_#{environment}=1"
+    swift_flags = "-D COMMUNITY_ENV_#{environment}"
+    console.log "circle community: project=#{project}, branch=#{branch}, env=#{environment}, flags=#{swift_flags}"
 
     data = JSON.stringify({
       build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'community_beta', IOS_MARKETING_VERSION: '5.8.0', IOS_SWIFT_FLAGS: swift_flags }
