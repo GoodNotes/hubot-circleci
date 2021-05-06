@@ -255,7 +255,7 @@ module.exports = (robot) ->
     console.log "circle community: project=#{project}, branch=#{branch}, env=#{environment}, flags=#{swift_flags}"
 
     data = JSON.stringify({
-      build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'community_beta', IOS_MARKETING_VERSION: '5.8.0', IOS_SWIFT_FLAGS: swift_flags }
+      build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'community_beta', IOS_MARKETING_VERSION: '5.9.0', IOS_SWIFT_FLAGS: swift_flags }
     })
     msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
       .headers("Accept": "application/json")
