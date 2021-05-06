@@ -263,6 +263,27 @@ module.exports = (robot) ->
       .post(data) handleResponse msg, (response) ->
           msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
+  robot.respond /circle pixeleraser (\S*)\s*(\S*)\s*(\S*)/i, (msg) ->
+    unless checkToken(msg)
+      return
+    project = escape(toProject(msg.match[1]))
+    unless msg.match[2]?
+      msg.send "I can't build without a branch"
+      return
+    branch = escape(msg.match[2])
+    environment = escape(msg.match[3] ? "production").toUpperCase()
+    swift_flags = "-D PIXEL_ERASER_ENV_#{environment}"
+    console.log "circle pixeleraser: project=#{project}, branch=#{branch}, env=#{environment}, flags=#{swift_flags}"
+
+    data = JSON.stringify({
+      build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'pixeleraser_beta', IOS_MARKETING_VERSION: '5.8.0', IOS_SWIFT_FLAGS: swift_flags }
+    })
+    msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
+      .headers("Accept": "application/json")
+      .headers("Content-Type": "application/json")
+      .post(data) handleResponse msg, (response) ->
+          msg.send "Build #{response.build_num} triggered: #{response.build_url}"
+
   robot.respond /circle pilot (.*) (.*) (.*) (.*)/i, (msg) ->
     unless checkToken(msg)
       return
