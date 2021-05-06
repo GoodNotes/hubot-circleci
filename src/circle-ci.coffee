@@ -13,6 +13,7 @@
 #   hubot circle deploy-catalyst <user>/<repo> <branch> - Trigger `fastlane catalyst deploy` on a branch
 #   hubot circle deploy-catalyst-legacy <user>/<repo> <branch> - Trigger `fastlane catalyst legacy` on a branch
 #   hubot circle community <user>/<repo> <branch> [environment] - Trigger deploy community build on a branch
+#   hubot circle pixeleraser <user>/<repo> <branch> [environment] - Trigger deploy pixeleraser build on a branch
 #   hubot circle beta <user>/<repo> <branch> - Trigger deploy beta on a branch
 #   hubot circle beta-catalyst <user>/<repo> <branch> - Trigger `fastlane catalyst appcenter` on a branch
 #   hubot circle adhoc <user>/<repo> <branch> - Trigger adhoc build on a branch
