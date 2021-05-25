@@ -9,6 +9,7 @@
 #   hubot circle last <user>/<repo> [branch] - Returns the build status of the last complete build of https://circleci.com/<user>/<repo>
 #   hubot circle retry <user>/<repo> <build_num> - Retries the build
 #   hubot circle retry all <failed>/<success> - Retries all builds matching the provided status
+#   hubot circle qa <user>/<repo> <branch> - Trigger deploy beta on a branch for QA purposes only
 #   hubot circle deploy <user>/<repo> <branch> - Trigger deploy on a branch
 #   hubot circle deploy-catalyst <user>/<repo> <branch> - Trigger `fastlane catalyst deploy` on a branch
 #   hubot circle deploy-catalyst-legacy <user>/<repo> <branch> - Trigger `fastlane catalyst legacy` on a branch
@@ -208,6 +209,23 @@ module.exports = (robot) ->
       msg.send "Status can only be failed or success."
       return
     getProjectsByStatus(msg, endpoint, status, 'list')
+
+  robot.respond /circle qa (\S*)\s*(\S*)/i, (msg) ->
+    unless checkToken(msg)
+      return
+    project = escape(toProject(msg.match[1]))
+    unless msg.match[2]?
+      msg.send "I can't build without a branch"
+      return
+    branch = escape(msg.match[2])
+    data = JSON.stringify({
+      build_parameters:{ CIRCLE_JOB: 'deploy-beta', FASTLANE_LANE: 'public_beta', IOS_SWIFT_FLAGS: "-D QA_ENV" }
+    })
+    msg.http("#{endpoint}/project/#{process.env.HUBOT_CIRCLECI_VCS_TYPE}/#{project}/tree/#{branch}?circle-token=#{process.env.HUBOT_CIRCLECI_TOKEN}")
+      .headers("Accept": "application/json")
+      .headers("Content-Type": "application/json")
+      .post(data) handleResponse msg, (response) ->
+          msg.send "Build #{response.build_num} triggered: #{response.build_url}"
 
   robot.respond /circle deploy (\S*)\s*(\S*)/i, (msg) ->
     unless checkToken(msg)
